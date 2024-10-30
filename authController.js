@@ -12,21 +12,21 @@ class AuthController{
         if(!nome || nome.length < 6){
             return res.json({
                 erro: true,
-                mensagem: "O nome deve ter pelo menos 6 caracteres.",
+                mensagem: "Seu nome há de ter 6 caracteres minimamente.",
             });
         }
         
         if(!email || email.length < 10){
             return res.json({
                 erro: true,
-                mensagem: "O email deve ter pelo menos 10 caracteres.",
+                mensagem: "Seu e-mail há de ter 10 caracteres minimamente.",
             });
         }
 
         if(!password || password.length < 8){
             return res.json({
                 erro: true,
-                mensagem: "A senha deve ter pelo menos 8 caracteres.",
+                mensagem: "Sua senha há de ter 8 caracteres minimamente.",
             });
         }
 
@@ -39,7 +39,7 @@ class AuthController{
         if (existe != 0) {
             return res.json({
                 erro: true,
-                mensagem: "Já existe um usuário cadastrado com este e-mail.",
+                mensagem: "Este e-mail já está sendo usado, se precisar trocar de senha contate o seu gmail e recupere-a.",
             });
         }
 
@@ -58,19 +58,19 @@ class AuthController{
 
             return res.json({
                 erro: false,
-                mensagem: "Usuário cadastrado com sucesso!"
+                mensagem: "Cadastro efetuado com sucesso!"
             });
 
         } catch (error) {
             return res.json({
                 erro: true,
-                mensagem: "Ocorreu um erro, tente novamente mais tarde! " + error,
+                mensagem: "Algo deu errado, por favor tente novamente!" + error,
             });
         }
         
 
     // TESTING
-    
+
     }
 
     static async login(req, res){
