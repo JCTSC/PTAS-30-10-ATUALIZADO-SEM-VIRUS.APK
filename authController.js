@@ -69,7 +69,8 @@ class AuthController{
         }
         
 
-        
+    // TESTING
+    
     }
 
     static async login(req, res){
