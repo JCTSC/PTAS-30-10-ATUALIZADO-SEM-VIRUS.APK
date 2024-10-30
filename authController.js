@@ -67,17 +67,9 @@ class AuthController{
                 mensagem: "Algo deu errado, por favor tente novamente!" + error,
             });
         }
-        
-
     // TESTING
-
     }
-
-    static async login(req, res){
-
-        
+    static async login(req, res){   
     }
-
 }
-
 module.exports = AuthController;
