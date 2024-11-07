@@ -9,3 +9,5 @@ const authRouters = require("./routes/authRoutes");
 app.use("/auth", authRouters);
 
 app.listen(8000);
+
+const cors = require(`cors`);
