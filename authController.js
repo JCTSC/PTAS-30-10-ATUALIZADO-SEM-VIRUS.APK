@@ -9,14 +9,14 @@ class AuthController{
     static async cadastro(req, res){
         const { nome, email, password, tipo } = req.body;
 
-        if(!nome || nome.length < 6){
+        if(!nome || nome.length < 4){
             return res.json({
                 erro: true,
                 mensagem: "Seu nome há de ter 6 caracteres minimamente.",
             });
         }
         
-        if(!email || email.length < 10){
+        if(!email || email.length < 15){
             return res.json({
                 erro: true,
                 mensagem: "Seu e-mail há de ter 10 caracteres minimamente.",
