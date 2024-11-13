@@ -1,13 +1,14 @@
-const prisma = new PrismaClient();
+const prisma = require('./prisma/prismaClient')
 
-const express = require("express");
-
-const app = express();
+const express= require('express')
+const app = express()
 app.use(express.json())
 
-const authRouters = require("./routes/authRoutes");
-app.use("/auth", authRouters);
+const authRoutes = require('./routes/authRoutes')
 
-app.listen(8000);
+app.use('/auth', authRoutes)
 
-const cors = require(`cors`);
+
+app.listen(8000)
+
+//npx prisma generate
