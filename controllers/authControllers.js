@@ -21,7 +21,7 @@ class AuthController {
             });
         }
 
-        if (!password || password.length < 6 || !/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        if (!password || password.length < 6 ) {
             return res.status(422).json({
                 erro: true,
                 msg: "A senha deve ter no mínimo 6 caracteres e conter números e letras"
@@ -32,7 +32,7 @@ class AuthController {
             where: { email }
         });
 
-        if (existe != 0) {
+        if ( existe != 0) {
             return res.status(422).json({
                 erro: true,
                 msg: "Email já cadastrado"
@@ -100,9 +100,8 @@ class AuthController {
         return res.status(200).json({
             erro: false,
             msg: "Login efetuado com sucesso",
-            token
+            token: token
         });
     }
 }
-
 module.exports = AuthController;

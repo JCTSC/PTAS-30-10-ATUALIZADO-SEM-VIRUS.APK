@@ -8,7 +8,6 @@ const authRoutes = require('./routes/authRoutes')
 
 app.use('/auth', authRoutes)
 
-
 app.listen(8000)
 
 //npx prisma generate
