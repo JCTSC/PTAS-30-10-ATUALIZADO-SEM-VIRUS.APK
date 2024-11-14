@@ -3,7 +3,7 @@ const prisma = require('../prisma/prismaClient')
 const jwt = require('jsonwebtoken');
 
 class AuthController {
-    static async cadastro(req, res) {
+    static async cadastrar(req, res) {
         const { nome, email, password } = req.body;
 
         if (!nome || nome.length < 6) {
@@ -72,7 +72,7 @@ class AuthController {
 
     static async login(req, res) {
         const { email, password } = req.body;
-        const usuario = await prisma.user.findUnique({
+        const usuario = await prisma.usuario.findFirst({
             where: { email: email }
         });
 
