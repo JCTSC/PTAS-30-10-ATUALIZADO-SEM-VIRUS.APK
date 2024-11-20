@@ -28,7 +28,7 @@ class AuthController {
             });
         }
 
-        const existe = await prisma.user.count({
+        const existe = await prisma.usuario.count({
             where: { email }
         });
 
@@ -43,7 +43,7 @@ class AuthController {
         const hashPass = await bcryptjs.hash(password, salt);
 
         try {
-            const usuario = await prisma.user.create({
+            const usuario = await prisma.usuario.create({
                 data: {
                     nome,
                     email,
