@@ -1,7 +1,6 @@
 const bcryptjs = require('bcryptjs');
 const prisma = require('../prisma/prismaClient')
 const jwt = require('jsonwebtoken');
-
 class AuthController {
     static async cadastrar(req, res) {
         const { nome, email, password } = req.body;
