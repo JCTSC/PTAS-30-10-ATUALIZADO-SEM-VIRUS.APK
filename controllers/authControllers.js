@@ -103,5 +103,55 @@ class AuthController {
             token: token
         });
     }
+
+    static async VerificaAutenticacao(req, res, next) {
+        try {
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
+    
+            if (!token) {
+                return res.status(401).json({
+                    erro: true,
+                    msg: "Token não encontrado"
+                });
+            }
+    
+            jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
+                if (err) {
+                    return res.status(403).json({
+                        erro: true,
+                        msg: "Token inválido"
+                    });
+                }
+                req.usuarioID = payload.id;
+                next();
+            });
+        } catch (error) {
+            return res.status(500).json({
+                erro: true,
+                msg: "Erro interno no servidor"
+            });
+        }
+    }
+    
+
+    static async VerificaADM(req, res, next) {
+        const usuario = await prisma.user.findUnique({
+            where: { id: req.usuarioID }
+        });
+
+        if (usuario.tipo == "Cliente") {
+           
+            next()
+        }else{
+            return res.status(403).json({
+                erro: true,
+                msg: "Você não tem permissão para acessar esse recurso"
+            });
+        }
+
+
+    }
 }
+
 module.exports = AuthController;
