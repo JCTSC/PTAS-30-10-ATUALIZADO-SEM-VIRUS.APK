@@ -1,4 +1,4 @@
-  generator client {
+generator client {
   provider = "prisma-client-js"
 }
 
@@ -7,10 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id Int @id @default(autoincrement())
-  nome String
-  email String @unique
+model User {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  email    String  @unique
   password String
-  tipo String
-} 
+  tipo     String
+  tables   Table[] 
+}
+
+model Table {
+  id       Int    @id @default(autoincrement())
+  name     String
+  nickname String?
+  columns  Int
+  contact  String?
+  rows     Int
+  userId   Int?   
+  user     User?  @relation(fields: [userId], references: [id])
+}
