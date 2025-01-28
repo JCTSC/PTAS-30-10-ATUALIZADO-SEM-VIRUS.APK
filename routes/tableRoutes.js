@@ -1,18 +1,13 @@
 const express= require('express');
-const router = express.Router();
+const router = require("express").Router();
 
 const TableController = require('../controllers/TableControllers')
+const AuthController = require("../controllers/AuthControllers")
 
-router.get('/reservas', TableController.Reservas)
+router.post("/novo", AuthController.VerificaAutenticacao, AuthController.VerificaADM, TableController.createTable);
 
-router.get('/grid', TableController.fetchTableGrid);
+router.get("/", TableController.buscarTable)
 
-router.post('/grid', TableController.createTableGrid);
-
-router.post('/reserve', TableController.reserveTable);
-
-router.get('/reservas/:userId', TableController.listUserReservations);
-
-router.post('/reservas/cancelar', TableController.cancelReservation);
+router.get("/disponibilidade", TableController.buscarTablesDate)
 
 module.exports = router

@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const AdminController = require('../controllers/AdmControllers');
+const AdmController = require('../controllers/AdmControllers');
+const AuthController = require('../controllers/AuthControllers');
 
-router.delete('/delete-user/:userId', AdminController.deleteUser);
 
-router.delete('/delete-table/:tableName', AdminController.deleteTable);
+router.get('/', AdmController.getAdm);
 
-router.post('/add-table', AdminController.addTable);
+router.patch('/', AdmController.updateAdm);
 
-router.post('/cancel-reservation', AdminController.cancelReservation);
-
-router.get("/tables", AdminController.getAllTables);
+router.get("/todos", AuthController.VerificaADM, AdmController.buscarUsers);
 
 module.exports = router;

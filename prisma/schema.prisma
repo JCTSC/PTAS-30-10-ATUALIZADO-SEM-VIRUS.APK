@@ -1,5 +1,12 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -7,22 +14,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int     @id @default(autoincrement())
-  nome     String
-  email    String  @unique
+model Usuario {
+  id Int @id @default(autoincrement())
+  nome String
+  email String @unique
   password String
-  tipo     String
-  tables   Table[] 
+  tipo String
+  reservas Reserva[]
 }
 
-model Table {
-  id       Int    @id @default(autoincrement())
-  name     String
-  nickname String?
-  columns  Int
-  contact  String?
-  rows     Int
-  userId   Int?   
-  user     User?  @relation(fields: [userId], references: [id])
+model Mesa {
+  id Int @id @default(autoincrement())
+  codigo String
+  n_lugares Int
+  reservas Reserva[]
+}
+
+model Reserva {
+  id Int @id @default(autoincrement())
+  data DateTime
+  n_pessoas Int
+
+  // status true somente se a reserva estiver ativa. False se for cancelada.
+  status Boolean @default(true)
+
+  usuarioId Int
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  mesaId Int
+  mesa Mesa @relation(fields: [mesaId], references: [id])
+
 }

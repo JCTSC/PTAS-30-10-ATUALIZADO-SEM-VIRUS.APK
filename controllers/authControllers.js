@@ -9,78 +9,83 @@ class AuthController {
         if (!nome || nome.length < 6) {
             return res.status(422).json({
                 erro: true,
-                msg: "O nome deve ter no mínimo 6 caracteres"
+                mensagem: "O nome deve ter pelo menos 6 caracteres.",
             });
         }
 
-        if (!email || email.length < 10 || (!email.endsWith("@gmail.com") && 
-            !email.endsWith("@hotmail.com") && !email.endsWith("@example.com"))) {
+        if (!email || email.length < 10) {
             return res.status(422).json({
                 erro: true,
-                msg: "Email inválido"
+                mensagem: "O email deve ter pelo menos 10 caracteres.",
             });
         }
 
-        if (!password || password.length < 6 || !/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        if (!password || password.length < 8) {
             return res.status(422).json({
                 erro: true,
-                msg: "A senha deve ter no mínimo 6 caracteres e conter números e letras"
+                mensagem: "A senha deve ter pelo menos 8 caracteres.",
             });
         }
 
-        const existe = await prisma.user.count({
-            where: { email }
-        });
+        const existe = await prisma.usuario.count({
+            where: {
+                email: email,
+            }
+        })
 
         if (existe != 0) {
             return res.status(422).json({
                 erro: true,
-                msg: "Email já cadastrado"
+                mensagem: "Já existe um usuário cadastrado com este e-mail.",
             });
         }
 
-        const salt = await bcryptjs.genSalt(8);
-        const hashPass = await bcryptjs.hash(password, salt);
+        const salt = bcryptjs.genSaltSync(8);
+        const hashedPassword = bcryptjs.hashSync(password, salt);
 
         try {
-            const usuario = await prisma.user.create({
+            const usuario = await prisma.usuario.create({
                 data: {
-                    nome,
-                    email,
-                    password: hashPass,
-                    tipo: "Cliente"
-                }///ADM
+                    nome: nome,
+                    email: email,
+                    password: hashedPassword,
+                    tipo: "cliente",
+                }
             });
-            const token = jwt.sign(
-                { id: usuario.id },
-                process.env.SECRET_KEY,
-                { expiresIn: "1h" }
-            );
+
+            console.log(JSON.stringify(usuario));
+
+            const token = jwt.sign({ id: usuario.id }, process.env.SECRET_KEY, {
+                expiresIn: "1h",
+            });
+
             return res.status(201).json({
                 erro: false,
-                msg: "Usuário cadastrado com sucesso",
-                token
+                mensagem: "Usuário cadastrado com sucesso!",
+                token: token,
             });
+
         } catch (error) {
             return res.status(500).json({
                 erro: true,
-                msg: "Erro ao cadastrar o usuário, tente novamente",
-                error: error.message || error
+                mensagem: "Ocorreu um erro, tente novamente mais tarde! " + error,
             });
-            
         }
+
+
+
     }
 
     static async login(req, res) {
         const { email, password } = req.body;
-        const usuario = await prisma.user.findUnique({
+        const usuario = await prisma.usuario.findUnique({
             where: { email: email }
         });
 
         if (!usuario) {
             return res.status(422).json({
                 erro: true,
-                msg: "Email ou senha incorretos!"
+                mensagem: "Email ou senha incorretos!"
             });
         }
 
@@ -88,7 +93,7 @@ class AuthController {
         if (!senhaCorreta) {
             return res.status(422).json({
                 erro: true,
-                msg: "Email ou senha incorretos!"
+                mensagem: "Email ou senha incorretos!"
             });
         }
 
@@ -100,20 +105,20 @@ class AuthController {
 
         return res.status(200).json({
             erro: false,
-            msg: "Login efetuado com sucesso",
-            token
+            mensagem: "Login efetuado com sucesso",
+            token: token,
         });
     }
 
     static async VerificaAutenticacao(req, res, next) {
         try {
             const authHeader = req.headers['authorization'];
-            const token = authHeader && authHeader.split(' ')[1];
+            const token = authHeader && authHeader.split(" ")[1];
     
             if (!token) {
                 return res.status(401).json({
                     erro: true,
-                    msg: "Token não encontrado"
+                    mensagem: "Token não encontrado"
                 });
             }
     
@@ -121,33 +126,33 @@ class AuthController {
                 if (err) {
                     return res.status(403).json({
                         erro: true,
-                        msg: "Token inválido"
+                        mensagem: "Token inválido"
                     });
                 }
-                req.usuarioID = payload.id;
+                req.usuarioId = payload.id;
                 next();
             });
         } catch (error) {
             return res.status(500).json({
                 erro: true,
-                msg: "Erro interno no servidor"
+                mensagem: "Erro interno no servidor"
             });
         }
     }
     
 
     static async VerificaADM(req, res, next) {
-        const usuario = await prisma.user.findUnique({
-            where: { id: req.usuarioID }
+        const usuario = await prisma.usuario.findUnique({
+            where: { id: req.usuarioId }
         });
 
-        if (usuario.tipo == "Cliente") {
+        if (usuario.tipo == "adm") {
            
             next()
         }else{
             return res.status(403).json({
                 erro: true,
-                msg: "Você não tem permissão para acessar esse recurso"
+                mensagem: "Você não tem permissão para acessar esse recurso"
             });
         }
 
